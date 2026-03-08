@@ -9,33 +9,70 @@ It separates API handling, agent orchestration, memory management, and monitorin
 
 ###  Architecture
 
-mermaid
-flowchart TD
+                 ┌───────────────────────┐
+                 │        Client         │
+                 │  Web / CLI / API App  │
+                 └───────────┬───────────┘
+                             │
+                             ▼
+                 ┌───────────────────────┐
+                 │     FastAPI API       │
+                 │  Async API Endpoints  │
+                 │  Request Validation   │
+                 └───────────┬───────────┘
+                             │
+                             ▼
+                 ┌───────────────────────┐
+                 │  Middleware Layer     │
+                 │  • JWT Authentication │
+                 │  • Rate Limiting      │
+                 │  • Logging Context    │
+                 │  • Request Tracking   │
+                 └───────────┬───────────┘
+                             │
+                             ▼
+                 ┌───────────────────────────────┐
+                 │    LangGraph Agent Engine     │
+                 │  Agent Workflow Orchestrator  │
+                 │  State Management & Routing   │
+                 └───────┬───────────────┬───────┘
+                         │               │
+                         ▼               ▼
 
-Client[Client Applications<br>Web / CLI / API] --> API[FastAPI API Layer<br>Async Endpoints]
+        ┌────────────────────────┐    ┌────────────────────────┐
+        │      LLM Service       │    │     Tool Execution     │
+        │                        │    │                        │
+        │  • OpenAI              │    │  External APIs         │
+        │  • Google Gemini       │    │  Custom Functions      │
+        │  • Ollama (Local)      │    │  Business Logic Tools  │
+        └───────────┬────────────┘    └───────────┬────────────┘
+                    │                             │
+                    └───────────────┬─────────────┘
+                                    ▼
 
-API --> Middleware[Middleware Layer<br>JWT Auth • Rate Limiting • Logging]
+                      ┌──────────────────────────┐
+                      │      Memory System       │
+                      │  PostgreSQL + pgvector   │
+                      │  Semantic Memory Search  │
+                      │  Conversation Context    │
+                      └───────────┬──────────────┘
+                                  │
+                                  ▼
+                      ┌──────────────────────────┐
+                      │      Data Persistence    │
+                      │   User / Session Data    │
+                      │   Chat History Storage   │
+                      └──────────────────────────┘
 
-Middleware --> LangGraph[LangGraph Agent Orchestrator<br>Workflow + State Management]
 
-LangGraph --> LLM[LLM Service]
+      Observability & Monitoring
+      ┌─────────────────────────────────────────────┐
+      │  Langfuse → LLM Tracing & Prompt Monitoring │
+      │  Prometheus → Metrics Collection            │
+      │  Grafana → Performance Dashboards           │
+      └─────────────────────────────────────────────┘
 
-LLM --> OpenAI[OpenAI GPT Models]
-LLM --> Gemini[Google Gemini Models]
-LLM --> Ollama[Local Models via Ollama]
-
-LangGraph --> Tools[Tool Execution Layer<br>External APIs / Functions]
-
-LangGraph --> Memory[Semantic Memory System<br>PostgreSQL + pgvector]
-
-Memory --> DB[(PostgreSQL Database<br>User Data / Sessions / Chat History)]
-
-LangGraph --> Observability[Observability Stack]
-
-Observability --> Langfuse[Langfuse<br>LLM Tracing]
-Observability --> Prometheus[Prometheus<br>Metrics]
-Observability --> Grafana[Grafana<br>Dashboards]
-
+      
 ##  Features
 
 - **Production-Ready Architecture**
