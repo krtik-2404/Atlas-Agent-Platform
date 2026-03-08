@@ -2,6 +2,40 @@
 
 A production-ready FastAPI platform for building AI agent applications with LangGraph integration. This platform provides a robust foundation for building scalable, secure, and maintainable AI agent services.
 
+## Architecture
+
+The Atlas Agent Platform follows a modular, production-ready architecture designed for scalable AI agent systems.  
+It separates API handling, agent orchestration, memory management, and monitoring to ensure maintainability, observability, and high performance in production environments.
+
+###  Architecture
+
+mermaid
+flowchart TD
+
+Client[Client Applications<br>Web / CLI / API] --> API[FastAPI API Layer<br>Async Endpoints]
+
+API --> Middleware[Middleware Layer<br>JWT Auth • Rate Limiting • Logging]
+
+Middleware --> LangGraph[LangGraph Agent Orchestrator<br>Workflow + State Management]
+
+LangGraph --> LLM[LLM Service]
+
+LLM --> OpenAI[OpenAI GPT Models]
+LLM --> Gemini[Google Gemini Models]
+LLM --> Ollama[Local Models via Ollama]
+
+LangGraph --> Tools[Tool Execution Layer<br>External APIs / Functions]
+
+LangGraph --> Memory[Semantic Memory System<br>PostgreSQL + pgvector]
+
+Memory --> DB[(PostgreSQL Database<br>User Data / Sessions / Chat History)]
+
+LangGraph --> Observability[Observability Stack]
+
+Observability --> Langfuse[Langfuse<br>LLM Tracing]
+Observability --> Prometheus[Prometheus<br>Metrics]
+Observability --> Grafana[Grafana<br>Dashboards]
+
 ##  Features
 
 - **Production-Ready Architecture**
